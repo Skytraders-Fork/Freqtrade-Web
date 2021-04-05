@@ -10,7 +10,7 @@ let api_buffers = [];
 let api_buffers_last_call = [];
 app.use(cors());
 
-let port = 3003;
+let port = 3000;
 
 try {
    instances = require("./instances.json");
