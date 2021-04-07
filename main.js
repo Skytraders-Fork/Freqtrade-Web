@@ -22,7 +22,13 @@ try {
    instance_names = instances.map(elem => elem.name);
 
    instances.forEach(elem => {
-      api_buffers.push({});
+      api_buffers.push({
+         instances: [],
+         balance: false,
+         closed: false,
+         open: false,
+         profit: false
+      });
       api_buffers_last_call.push(Date.now());
    });
 }catch(err) {
