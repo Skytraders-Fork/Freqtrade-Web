@@ -97,6 +97,24 @@ async function UpdateBuffer(index) {
 
    if (!balance || !closed || !open || !profit) return;
 
+   balance.currencies.sort(function(a, b) {
+      if (a.est_stake < b.est_stake) return 1;
+      if (a.est_stake > b.est_stake) return -1;
+      return 0;
+   });
+
+   closed.sort(function(a, b) {
+      if (a.close_timestamp > b.close_timestamp) return 1;
+      if (a.close_timestamp < b.close_timestamp) return -1;
+      return 0;
+   });
+   
+   open.sort(function(a, b) {
+      if (a.open_timestamp > b.open_timestamp) return 1;
+      if (a.open_timestamp < b.open_timestamp) return -1;
+      return 0;
+   });
+
    api_buffers[index] = {
       instances: instance_names,
       balance: balance,
