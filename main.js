@@ -90,26 +90,26 @@ app.get("/api/all", async (req, res) => {
 async function UpdateBuffer(index) {
    api_buffers_last_call[index] = Date.now();
    
-   let balance = await Get("balance", instances[index]);
-   let closed = await Get("trades", instances[index]);
-   let open = await Get("status", instances[index]);
-   let profit = await Get("profit", instances[index]);
+   let balance = (await Get("balance", instances[index])).res;
+   let closed = (await Get("trades", instances[index])).res;
+   let open = (await Get("status", instances[index])).res;
+   let profit = (await Get("profit", instances[index])).res;
 
-   if (balance.status != "OK" || closed.status != "OK" || open.status != "OK" || profit.status != "OK") return;
+   if (!balance || !closed || !open || !profit) return;
 
-   balance.res.currencies.sort(function(a, b) {
+   balance.currencies.sort(function(a, b) {
       if (a.est_stake < b.est_stake) return 1;
       if (a.est_stake > b.est_stake) return -1;
       return 0;
    });
 
-   closed.res.sort(function(a, b) {
+   closed.trades.sort(function(a, b) {
       if (a.close_timestamp > b.close_timestamp) return 1;
       if (a.close_timestamp < b.close_timestamp) return -1;
       return 0;
    });
    
-   open.res.sort(function(a, b) {
+   open.sort(function(a, b) {
       if (a.open_timestamp > b.open_timestamp) return 1;
       if (a.open_timestamp < b.open_timestamp) return -1;
       return 0;
@@ -117,10 +117,10 @@ async function UpdateBuffer(index) {
 
    api_buffers[index] = {
       instances: instance_names,
-      balance: balance.res,
-      open: open.res,
-      closed: closed.trades.res,
-      profit: profit.res
+      balance: balance,
+      open: open,
+      closed: closed.trades,
+      profit: profit
    };
 
    let startbal = balance.total - profit.profit_all_coin;
