@@ -124,12 +124,14 @@ async function UpdateBuffer(index) {
       return 0;
    });
 
-   closed.trades.forEach(trade => {
+   closed.trades = closed.trades.map(trade => {
       let high_profit = GetProfit(trade.amount, trade.max_rate, trade.fee_close, trade.open_trade_value);
       let low_profit = GetProfit(trade.amount, trade.min_rate, trade.fee_close, trade.open_trade_value);
 
       trade.min_rate_pct = low_profit.pct;
       trade.max_rate_pct = high_profit.pct;
+
+      return trade;
    });
 
    api_buffers[index] = {
