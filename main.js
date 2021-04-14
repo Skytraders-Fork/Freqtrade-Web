@@ -148,14 +148,6 @@ async function UpdateBuffer(index) {
    api_buffers[index].profit.profit_all_percent_fixed = balance.total / startbal * 100 - 100;
    api_buffers[index].profit.profit_closed_percent_fixed = closed_balance / startbal * 100 - 100;
 
-   api_buffers[index].closed.forEach((trade, j) => {
-      let high_profit = GetProfit(trade.amount, trade.max_rate, trade.fee_close, trade.open_trade_value);
-      let low_profit = GetProfit(trade.amount, trade.min_rate, trade.fee_close, trade.open_trade_value);
-
-      api_buffers[index].closed[j].min_rate_pct = low_profit.pct;
-      api_buffers[index].closed[j].max_rate_pct = high_profit.pct;
-   });
-
    console.log(`${instances[index].name}: Updated buffer.`);
 }
 
