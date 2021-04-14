@@ -87,6 +87,15 @@ app.get("/api/all", async (req, res) => {
    res.json(api_buffers[instance]);
 });
 
+let GetProfit = (amount, rate, close_fee, open_trade_value) => {
+   let close_trade_before_fees = amount * rate;
+   let fee = close_fee * close_trade_before_fees;
+   let close_trade_after_fees = close_trade_before_fees - fee;
+   let abs = close_trade_after_fees - open_trade_value;
+   let pct = close_trade_after_fees / open_trade_value * 100 - 100;
+   return {abs, pct};
+};
+
 async function UpdateBuffer(index) {
    api_buffers_last_call[index] = Date.now();
    
@@ -113,6 +122,14 @@ async function UpdateBuffer(index) {
       if (a.open_timestamp > b.open_timestamp) return 1;
       if (a.open_timestamp < b.open_timestamp) return -1;
       return 0;
+   });
+
+   closed.forEach(trade => {
+      let high_profit = GetProfit(trade.amount, trade.max_rate, trade.fee_close, trade.open_trade_value);
+      let low_profit = GetProfit(trade.amount, trade.min_rate, trade.fee_close, trade.open_trade_value);
+
+      trade.min_rate_pct = low_profit.pct;
+      trade.max_rate_pct = high_profit.pct;
    });
 
    api_buffers[index] = {
